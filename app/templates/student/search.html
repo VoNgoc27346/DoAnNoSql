@@ -1,0 +1,66 @@
+{% extends "student/layout.html" %} {% block student_content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body p-4">
+        <h4 class="text-center text-primary mb-3">🔍 Tra cứu Hệ thống</h4>
+        <form method="POST" class="d-flex">
+          <input
+            type="text"
+            name="keyword"
+            class="form-control form-control-lg me-2"
+            placeholder="Nhập tên Giảng viên hoặc tên Môn học..."
+            value="{{ keyword }}"
+            required
+          />
+          <button class="btn btn-primary btn-lg">Tìm kiếm</button>
+        </form>
+      </div>
+    </div>
+
+    {% if keyword %}
+    <h5 class="mb-3">Kết quả tìm kiếm cho: "<strong>{{ keyword }}</strong>"</h5>
+    {% if results %} {% for item in results %}
+    <div
+      class="card mb-3 border-start border-5 {% if item.type == 'Môn học' %}border-info{% else %}border-warning{% endif %} shadow-sm"
+    >
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <h5 class="card-title fw-bold text-uppercase">{{ item.title }}</h5>
+          <span
+            class="badge {% if item.type == 'Môn học' %}bg-info text-dark{% else %}bg-warning text-dark{% endif %}"
+          >
+            {{ item.type }}
+          </span>
+        </div>
+        <p class="text-muted small mb-2">ID: {{ item.id }}</p>
+
+        <hr />
+
+        {% if item.type == 'Môn học' %}
+        <p class="mb-1 fw-bold text-muted">
+          👨‍🏫 Các giảng viên đang dạy môn này:
+        </p>
+        {% else %}
+        <p class="mb-1 fw-bold text-muted">📚 Các môn học đang phụ trách:</p>
+        {% endif %} {% if item.related_info %}
+        <div class="d-flex flex-wrap gap-2">
+          {% for rel in item.related_info %}
+          <span class="badge bg-light text-secondary border">{{ rel }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        <span class="text-muted fst-italic small"
+          >Chưa có thông tin liên kết trong học kỳ này.</span
+        >
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <div class="alert alert-secondary text-center">
+      Không tìm thấy kết quả nào.
+    </div>
+    {% endif %} {% endif %}
+  </div>
+</div>
+{% endblock %}

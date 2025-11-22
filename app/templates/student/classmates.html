@@ -1,0 +1,59 @@
+{% extends "student/layout.html" %} {% block student_content %}
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white">
+    <h4 class="mb-0 text-primary">🤝 Bạn bè cùng lớp học phần</h4>
+    <p class="text-muted small mb-0">
+      Danh sách những sinh viên đang học chung các lớp với bạn trong học kỳ này.
+    </p>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 50px">#</th>
+          <th>Họ tên Sinh viên</th>
+          <th>Mã SV</th>
+          <th>Lớp Sinh hoạt</th>
+          <th class="text-center">Số lớp học chung</th>
+          <th>Chi tiết các lớp chung</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for friend in classmates %}
+        <tr>
+          <td class="text-center">
+            <img
+              src="https://ui-avatars.com/api/?name={{ friend.name }}&size=32&background=random"
+              class="rounded-circle"
+            />
+          </td>
+          <td class="fw-bold">{{ friend.name }}</td>
+          <td>{{ friend.id }}</td>
+          <td>{{ friend.class_sh }}</td>
+          <td class="text-center">
+            <span class="badge bg-success rounded-pill fs-6"
+              >{{ friend.shared_count }}</span
+            >
+          </td>
+          <td>
+            {% for cl in friend.shared_classes %}
+            <span class="badge bg-light text-dark border me-1">{{ cl }}</span>
+            {% endfor %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" class="text-center py-5 text-muted">
+            <h5>Chưa tìm thấy bạn học chung!</h5>
+            <p>Hãy đăng ký thêm các lớp học phần để gặp gỡ bạn bè mới nhé.</p>
+            <a href="/student/register" class="btn btn-primary"
+              >Đăng ký lớp ngay</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

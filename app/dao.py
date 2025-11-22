@@ -168,6 +168,73 @@ class Dao:
                 DELETE r
             """, sid=sid, cid=class_id)
 
+    @staticmethod
+    def search_graph(keyword):
+        """
+        Tìm kiếm đa năng:
+        1. Tìm Môn học -> Trả về danh sách Giảng viên đang dạy môn đó.
+        2. Tìm Giảng viên -> Trả về danh sách Môn học họ đang dạy.
+        """
+        keyword = keyword.lower()
+        with Dao._get_session() as session:
+            # Query 1: Tìm Course
+            q1 = """
+            MATCH (c:Course) WHERE toLower(c.name) CONTAINS $kw
+            OPTIONAL MATCH (c)-[:HAS_CLASS]->(cl:Class)<-[:TEACHES]-(t:Teacher)
+            RETURN 
+                'Môn học' as type, 
+                c.name as title, 
+                c.course_id as id,
+                collect(DISTINCT t.name) as related_info
+            """
+            
+            # Query 2: Tìm Teacher
+            q2 = """
+            MATCH (t:Teacher) WHERE toLower(t.name) CONTAINS $kw
+            OPTIONAL MATCH (t)-[:TEACHES]->(cl:Class)<-[:HAS_CLASS]-(c:Course)
+            RETURN 
+                'Giảng viên' as type, 
+                t.name as title, 
+                t.teacher_id as id,
+                collect(DISTINCT c.name) as related_info
+            """
+            
+            # Chạy 2 query và gộp kết quả
+            res1 = session.run(q1, kw=keyword).data()
+            res2 = session.run(q2, kw=keyword).data()
+            return res1 + res2
+
+    @staticmethod
+    def get_classmates(sid):
+        """
+        Tìm những sinh viên học chung các lớp học phần.
+        Mô hình: (Me)-[:ENROLLED_IN]->(Class)<-[:ENROLLED_IN]-(Friend)
+        """
+        with Dao._get_session() as session:
+            query = """
+            MATCH (me:Student {student_id: $sid})-[:ENROLLED_IN]->(cl:Class)<-[:ENROLLED_IN]-(friend:Student)
+            WHERE me.student_id <> friend.student_id
+            RETURN 
+                friend.name as name, 
+                friend.student_id as id, 
+                friend.class as class_sh,
+                count(cl) as shared_count, 
+                collect(cl.class_id) as shared_classes
+            ORDER BY shared_count DESC
+            LIMIT 10
+            """
+            return session.run(query, sid=sid).data()
+
+    @staticmethod
+    def get_credit_stats(sid):
+        """Thống kê số tín chỉ đã đăng ký nhóm theo Khoa quản lý môn học"""
+        with Dao._get_session() as session:
+            query = """
+            MATCH (s:Student {student_id: $sid})-[:ENROLLED_IN]->(cl:Class)<-[:HAS_CLASS]-(c:Course)-[:BELONGS_TO]->(d:Department)
+            RETURN d.name as dept, sum(c.credit) as total_credit
+            """
+            return session.run(query, sid=sid).data()
+
     # --- COURSE ---
     @staticmethod
     def get_all_courses():

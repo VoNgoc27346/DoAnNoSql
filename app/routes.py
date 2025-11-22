@@ -71,6 +71,27 @@ def student_unenroll(class_id):
     flash(f"Đã hủy đăng ký lớp {class_id}")
     return redirect(url_for('main.student_dashboard'))
 
+
+# --- TRA CỨU & BẠN BÈ ---
+
+@main_bp.route('/student/search', methods=['GET', 'POST'])
+def student_search():
+    if session.get('role') != 'student': return redirect('/')
+    results = []
+    keyword = ""
+    if request.method == 'POST':
+        keyword = request.form.get('keyword', '')
+        if keyword:
+            results = Dao.search_graph(keyword)
+    return render_template('student/search.html', results=results, keyword=keyword)
+
+@main_bp.route('/student/classmates')
+def student_classmates():
+    if session.get('role') != 'student': return redirect('/')
+    classmates = Dao.get_classmates(session['user'])
+    return render_template('student/classmates.html', classmates=classmates)
+
+
 # --- ADMIN ROUTES ---
 @main_bp.route('/admin/teachers', methods=['GET', 'POST'])
 def admin_teachers():
