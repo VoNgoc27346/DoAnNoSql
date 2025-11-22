@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block content %}
+<style>
+  .sidebar {
+    min-height: 100vh;
+    background: #2c3e50;
+    color: white;
+  }
+  .sidebar a {
+    color: #b0c4de;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+  }
+  .sidebar a:hover {
+    background: #34495e;
+    color: white;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar p-3">
+      <h4 class="text-center mb-4">Admin Panel</h4>
+      <a href="/admin/teachers">🎓 Quản lý Giảng viên</a>
+      <a href="/admin/students">🧑‍🎓 Quản lý Sinh viên</a>
+      <a href="/admin/courses">📚 Quản lý Môn học</a>
+      <a href="/admin/classes">🏫 Tạo Lớp Học phần</a>
+      <hr />
+      <a href="/logout" class="text-danger">Đăng xuất</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10 p-4">
+      <h2>{{ title }}</h2>
+      <hr />
+      {% block admin_content %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

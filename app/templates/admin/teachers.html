@@ -1,0 +1,76 @@
+{% extends "admin/layout.html" %} {% block admin_content %}
+<div class="card p-3">
+  <h5>Thêm Giảng viên mới</h5>
+  <form method="POST" class="row g-3">
+    <div class="col-md-2">
+      <input
+        type="text"
+        name="id"
+        placeholder="Mã GV"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-3">
+      <input
+        type="text"
+        name="name"
+        placeholder="Họ tên"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-2">
+      <input type="text" name="phone" placeholder="SĐT" class="form-control" />
+    </div>
+    <div class="col-md-2">
+      <input
+        type="text"
+        name="position"
+        placeholder="Chức danh"
+        class="form-control"
+      />
+    </div>
+    <div class="col-md-2">
+      <select name="dept" class="form-select">
+        <option value="CNTT">Khoa CNTT</option>
+        <option value="KT">Khoa Kinh Tế</option>
+      </select>
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-success w-100">Thêm</button>
+    </div>
+  </form>
+</div>
+
+<table class="table table-striped bg-white mt-3 shadow-sm">
+  <thead>
+    <tr>
+      <th>Mã</th>
+      <th>Tên</th>
+      <th>SĐT</th>
+      <th>Khoa</th>
+      <th>Chức danh</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in teachers %}
+    <tr>
+      <td>{{ t.data.teacher_id }}</td>
+      <td>{{ t.data.name }}</td>
+      <td>{{ t.data.phone }}</td>
+      <td>{{ t.dept }}</td>
+      <td>{{ t.data.position }}</td>
+      <td>
+        <a
+          href="/admin/teachers/delete/{{ t.data.teacher_id }}"
+          class="btn btn-sm btn-danger"
+          >Xóa</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

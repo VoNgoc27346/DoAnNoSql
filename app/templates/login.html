@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block content %}
+<div
+  class="container d-flex justify-content-center align-items-center"
+  style="height: 100vh"
+>
+  <div class="card p-4 shadow" style="width: 400px">
+    <h3 class="text-center mb-4">Đăng nhập Hệ thống</h3>
+    <form method="POST" action="/login">
+      <div class="mb-3">
+        <label class="form-label">Tên đăng nhập / MSSV</label>
+        <input type="text" name="username" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Mật khẩu</label>
+        <input type="password" name="password" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Vai trò</label>
+        <select name="role" class="form-select">
+          <option value="admin">Admin</option>
+          <option value="student">Sinh viên</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+    </form>
+    <div class="mt-3 text-muted small text-center">
+      <p>Tk Admin mặc định: admin / admin123</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

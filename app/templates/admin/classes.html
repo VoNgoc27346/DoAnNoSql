@@ -1,0 +1,86 @@
+{% extends "admin/layout.html" %} {% block admin_content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card p-4 shadow-sm">
+      <h4 class="mb-3 text-primary border-bottom pb-2">
+        Tạo Lớp Học Phần (Course Section)
+      </h4>
+
+      <div class="alert alert-light border mb-3 small">
+        <i class="bi bi-info-circle-fill"></i>
+        Hành động này sẽ tạo ra 1 Node <strong>Class</strong> mới và tự động tạo
+        3 mối quan hệ trong đồ thị:
+        <ul>
+          <li>(:Teacher)-[:TEACHES]->(:Class)</li>
+          <li>(:Course)-[:HAS_CLASS]->(:Class)</li>
+          <li>(:Class)-[:OFFERED_IN]->(:Semester)</li>
+        </ul>
+      </div>
+
+      <form method="POST" class="row g-3">
+        <!-- Chọn Môn Học -->
+        <div class="col-md-12">
+          <label class="form-label fw-bold">1. Chọn Môn học</label>
+          <select name="course" class="form-select" required>
+            <option value="" disabled selected>-- Chọn môn học --</option>
+            {% for c in data.courses %}
+            <option value="{{ c.id }}">{{ c.name }} ({{ c.id }})</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Chọn Giảng Viên -->
+        <div class="col-md-8">
+          <label class="form-label fw-bold">2. Giảng viên phụ trách</label>
+          <select name="teacher" class="form-select" required>
+            <option value="" disabled selected>-- Chọn giảng viên --</option>
+            {% for t in data.teachers %}
+            <option value="{{ t.id }}">{{ t.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Chọn Học Kỳ -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">3. Học kỳ</label>
+          <select name="sem" class="form-select" required>
+            {% for s in data.semesters %}
+            <option value="{{ s.id }}">{{ s.id }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-12"><hr class="my-2" /></div>
+
+        <!-- Thông tin chi tiết -->
+        <div class="col-md-6">
+          <label class="form-label">Phòng học</label>
+          <input
+            type="text"
+            name="room"
+            class="form-control"
+            placeholder="VD: A2-301"
+            required
+          />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Lịch học (Thời khóa biểu)</label>
+          <input
+            type="text"
+            name="schedule"
+            class="form-control"
+            placeholder="VD: Thứ 2, Thứ 4 (Tiết 1-3)"
+            required
+          />
+        </div>
+
+        <div class="col-12 text-center mt-4">
+          <button class="btn btn-primary btn-lg w-50">
+            <span class="h5">🔄 Tạo Lớp & Liên kết</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "admin/layout.html" %} {% block admin_content %}
+<div class="card p-3">
+  <h5>Thêm Môn học mới</h5>
+  <form method="POST" class="row g-3">
+    <div class="col-md-2">
+      <label class="form-label small text-muted">Mã Học phần</label>
+      <input
+        type="text"
+        name="id"
+        placeholder="VD: CMP101"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small text-muted">Tên môn học</label>
+      <input
+        type="text"
+        name="name"
+        placeholder="VD: Cấu trúc dữ liệu"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small text-muted">Số Tín chỉ</label>
+      <input type="number" name="credit" placeholder="3" class="form-control" />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small text-muted">Học kỳ chuẩn</label>
+      <input
+        type="text"
+        name="sem"
+        placeholder="VD: 1, 2"
+        class="form-control"
+      />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small text-muted">Khoa quản lý</label>
+      <select name="dept" class="form-select">
+        <option value="CNTT">CNTT</option>
+        <option value="KT">Kinh Tế</option>
+      </select>
+    </div>
+    <div class="col-md-12 text-end">
+      <button class="btn btn-primary">Thêm Môn Học</button>
+    </div>
+  </form>
+</div>
+
+<table class="table table-striped bg-white mt-3 shadow-sm align-middle">
+  <thead class="table-dark">
+    <tr>
+      <th>Mã HP</th>
+      <th>Tên Môn học</th>
+      <th>Số Tín chỉ</th>
+      <th>Học kỳ chuẩn</th>
+      <th>Khoa quản lý</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in courses %}
+    <tr>
+      <td><strong>{{ c.data.course_id }}</strong></td>
+      <td>{{ c.data.name }}</td>
+      <td>{{ c.data.credit }}</td>
+      <td>HK {{ c.data.semester }}</td>
+      <td>{{ c.dept }}</td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="5" class="text-center text-muted py-3">
+        Chưa có dữ liệu môn học
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
