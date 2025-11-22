@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow mb-4">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/student/dashboard"
+      >🎓 Cổng thông tin Sinh viên</a
+    >
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="/student/dashboard"
+            >Trang chủ & TKB</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/student/register">Đăng ký học phần</a>
+        </li>
+        <li class="nav-item ms-3">
+          <a href="/logout" class="btn btn-light text-primary btn-sm mt-1"
+            >Đăng xuất ({{ session['user'] }})</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">{% block student_content %}{% endblock %}</div>
+{% endblock %}

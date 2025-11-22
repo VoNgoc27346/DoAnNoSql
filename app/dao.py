@@ -8,21 +8,17 @@ class Dao:
     @staticmethod
     def init_db():
         with Dao._get_session() as session:
-            # Hàm phụ: Chạy lệnh tạo constraint và bỏ qua lỗi nếu nó đã tồn tại
-            # Cách này an toàn hơn dùng "IF NOT EXISTS" vì tương thích mọi phiên bản Neo4j
             def create_constraint_safe(query):
                 try:
                     session.run(query)
                 except Exception:
                     pass 
 
-            # Tạo constraints (Bỏ IF NOT EXISTS)
             create_constraint_safe("CREATE CONSTRAINT FOR (t:Teacher) REQUIRE t.teacher_id IS UNIQUE")
             create_constraint_safe("CREATE CONSTRAINT FOR (s:Student) REQUIRE s.student_id IS UNIQUE")
             create_constraint_safe("CREATE CONSTRAINT FOR (c:Course) REQUIRE c.course_id IS UNIQUE")
             create_constraint_safe("CREATE CONSTRAINT FOR (a:Admin) REQUIRE a.username IS UNIQUE")
             
-            # Tạo Admin & Dữ liệu mẫu
             session.run("""
                 MERGE (a:Admin {username: 'admin'})
                 ON CREATE SET a.password = 'admin123', a.name = 'Quản trị viên'
@@ -39,13 +35,9 @@ class Dao:
     def verify_user(username, password, role):
         with Dao._get_session() as session:
             if role == 'admin':
-                # Đổi $pass thành $password để tránh từ khóa reserved của Python
                 query = "MATCH (a:Admin {username: $user, password: $password}) RETURN a"
             else:
-                # Đổi $pass thành $password
                 query = "MATCH (s:Student {student_id: $user, password: $password}) RETURN s"
-            
-            # Sửa tham số pass=password thành password=password
             result = session.run(query, user=username, password=password)
             return result.single() is not None
 
@@ -96,6 +88,85 @@ class Dao:
     def delete_student(sid):
         with Dao._get_session() as session:
             session.run("MATCH (s:Student {student_id: $sid}) DETACH DELETE s", sid=sid)
+
+    # --- STUDENT PORTAL FUNCTIONS (NEW) ---
+    @staticmethod
+    def get_student_info(sid):
+        """Lấy thông tin cá nhân sinh viên"""
+        with Dao._get_session() as session:
+            query = """
+            MATCH (s:Student {student_id: $sid})
+            OPTIONAL MATCH (s)-[:MAJOR_IN]->(d:Department)
+            RETURN s, d.name as major
+            """
+            result = session.run(query, sid=sid).single()
+            if result:
+                return {"data": result["s"], "major": result["major"]}
+            return None
+
+    @staticmethod
+    def get_student_enrolled_classes(sid):
+        """Lấy danh sách lớp đã đăng ký (TKB)"""
+        with Dao._get_session() as session:
+            query = """
+            MATCH (s:Student {student_id: $sid})-[:ENROLLED_IN]->(cl:Class)
+            MATCH (cl)<-[:HAS_CLASS]-(c:Course)
+            MATCH (cl)<-[:TEACHES]-(t:Teacher)
+            RETURN cl, c.name as course_name, c.credit as credit, t.name as teacher_name
+            ORDER BY cl.class_id
+            """
+            result = session.run(query, sid=sid)
+            return [{
+                "class_id": r["cl"]["class_id"],
+                "room": r["cl"]["room"],
+                "schedule": r["cl"]["schedule"],
+                "course_name": r["course_name"],
+                "credit": r["credit"],
+                "teacher_name": r["teacher_name"]
+            } for r in result]
+
+    @staticmethod
+    def get_available_classes_for_registration(sid):
+        """Lấy danh sách các lớp MỞ mà sinh viên CHƯA đăng ký"""
+        with Dao._get_session() as session:
+            query = """
+            MATCH (cl:Class)
+            MATCH (cl)<-[:HAS_CLASS]-(c:Course)
+            MATCH (cl)<-[:TEACHES]-(t:Teacher)
+            WHERE NOT EXISTS {
+                MATCH (s:Student {student_id: $sid})-[:ENROLLED_IN]->(cl)
+            }
+            RETURN cl, c.name as course_name, c.credit as credit, t.name as teacher_name
+            ORDER BY cl.class_id
+            """
+            result = session.run(query, sid=sid)
+            return [{
+                "class_id": r["cl"]["class_id"],
+                "room": r["cl"]["room"],
+                "schedule": r["cl"]["schedule"],
+                "course_name": r["course_name"],
+                "credit": r["credit"],
+                "teacher_name": r["teacher_name"]
+            } for r in result]
+
+    @staticmethod
+    def enroll_class(sid, class_id):
+        """Sinh viên đăng ký lớp (Tạo quan hệ ENROLLED_IN)"""
+        with Dao._get_session() as session:
+            session.run("""
+                MATCH (s:Student {student_id: $sid})
+                MATCH (cl:Class {class_id: $cid})
+                MERGE (s)-[:ENROLLED_IN]->(cl)
+            """, sid=sid, cid=class_id)
+
+    @staticmethod
+    def unenroll_class(sid, class_id):
+        """Hủy đăng ký lớp"""
+        with Dao._get_session() as session:
+            session.run("""
+                MATCH (s:Student {student_id: $sid})-[r:ENROLLED_IN]->(cl:Class {class_id: $cid})
+                DELETE r
+            """, sid=sid, cid=class_id)
 
     # --- COURSE ---
     @staticmethod

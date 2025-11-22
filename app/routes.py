@@ -9,8 +9,8 @@ def index():
     if 'user' in session:
         if session['role'] == 'admin':
             return redirect(url_for('main.admin_teachers'))
-        else:
-            return "<h1>Trang Sinh Viên (Đang phát triển)</h1><a href='/logout'>Đăng xuất</a>"
+        elif session['role'] == 'student':
+            return redirect(url_for('main.student_dashboard'))
     return render_template('login.html')
 
 @main_bp.route('/login', methods=['POST'])
@@ -31,6 +31,45 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('main.index'))
+
+# --- STUDENT ROUTES (NEW) ---
+@main_bp.route('/student/dashboard')
+def student_dashboard():
+    if session.get('role') != 'student': return redirect('/')
+    
+    sid = session['user']
+    info = Dao.get_student_info(sid)
+    my_classes = Dao.get_student_enrolled_classes(sid)
+    
+    # Tính tổng tín chỉ đã đăng ký
+    total_credit = sum(c['credit'] for c in my_classes) if my_classes else 0
+    
+    return render_template('student/dashboard.html', info=info, classes=my_classes, total_credit=total_credit)
+
+@main_bp.route('/student/register', methods=['GET'])
+def student_register_view():
+    if session.get('role') != 'student': return redirect('/')
+    
+    sid = session['user']
+    available_classes = Dao.get_available_classes_for_registration(sid)
+    
+    return render_template('student/register.html', classes=available_classes)
+
+@main_bp.route('/student/enroll/<class_id>')
+def student_enroll(class_id):
+    if session.get('role') != 'student': return redirect('/')
+    
+    Dao.enroll_class(session['user'], class_id)
+    flash(f"Đăng ký thành công lớp {class_id}")
+    return redirect(url_for('main.student_register_view'))
+
+@main_bp.route('/student/unenroll/<class_id>')
+def student_unenroll(class_id):
+    if session.get('role') != 'student': return redirect('/')
+    
+    Dao.unenroll_class(session['user'], class_id)
+    flash(f"Đã hủy đăng ký lớp {class_id}")
+    return redirect(url_for('main.student_dashboard'))
 
 # --- ADMIN ROUTES ---
 @main_bp.route('/admin/teachers', methods=['GET', 'POST'])

@@ -1,0 +1,87 @@
+{% extends "student/layout.html" %} {% block student_content %}
+<div class="row">
+  <!-- Thông tin sinh viên -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <img
+            src="https://ui-avatars.com/api/?name={{ info.data.name }}&background=0D8ABC&color=fff&size=128"
+            class="rounded-circle"
+          />
+        </div>
+        <h4>{{ info.data.name }}</h4>
+        <p class="text-muted mb-1">{{ info.data.student_id }}</p>
+        <hr />
+        <div class="text-start">
+          <p><strong>Lớp:</strong> {{ info.data.class }}</p>
+          <p><strong>Ngành:</strong> {{ info.major }}</p>
+          <p><strong>Khóa:</strong> {{ info.data.year }}</p>
+          <p>
+            <strong>Trạng thái:</strong>
+            <span class="badge bg-success">{{ info.data.status }}</span>
+          </p>
+          <p>
+            <strong>Tổng tín chỉ ĐK:</strong>
+            <span class="badge bg-primary">{{ total_credit }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thời khóa biểu (Các lớp đã đăng ký) -->
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0 text-primary">📅 Lớp học phần đã đăng ký</h5>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Mã Lớp</th>
+              <th>Môn học</th>
+              <th>Giảng viên</th>
+              <th>Lịch học</th>
+              <th>Phòng</th>
+              <th>TC</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in classes %}
+            <tr>
+              <td><strong>{{ c.class_id }}</strong></td>
+              <td>{{ c.course_name }}</td>
+              <td>{{ c.teacher_name }}</td>
+              <td>{{ c.schedule }}</td>
+              <td>{{ c.room }}</td>
+              <td>{{ c.credit }}</td>
+              <td>
+                <a
+                  href="/student/unenroll/{{ c.class_id }}"
+                  class="btn btn-outline-danger btn-sm"
+                  onclick="return confirm('Bạn có chắc muốn hủy lớp này không?');"
+                >
+                  Hủy
+                </a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="7" class="text-center py-4 text-muted">
+                Bạn chưa đăng ký lớp học phần nào. <br />
+                <a href="/student/register" class="btn btn-primary btn-sm mt-2"
+                  >Đăng ký ngay</a
+                >
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
