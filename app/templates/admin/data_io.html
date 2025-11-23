@@ -1,0 +1,72 @@
+{% extends "admin/layout.html" %} {% block admin_content %}
+<div class="row">
+  <!-- EXPORT -->
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0">📤 Xuất dữ liệu (Export)</h5>
+      </div>
+      <div class="card-body">
+        <p>
+          Tải xuống toàn bộ dữ liệu Giảng viên, Sinh viên và Môn học hiện có
+          dưới dạng file JSON.
+        </p>
+        <div class="alert alert-light border">
+          <strong>Dữ liệu bao gồm:</strong>
+          <ul>
+            <li>Danh sách Giảng viên</li>
+            <li>Danh sách Sinh viên</li>
+            <li>Danh sách Môn học</li>
+          </ul>
+        </div>
+        <a href="/admin/export-json" class="btn btn-success w-100">
+          <i class="bi bi-download"></i> Tải xuống (.json)
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">📥 Nhập dữ liệu (Import)</h5>
+      </div>
+      <div class="card-body">
+        <p>
+          Nhập dữ liệu từ file JSON vào hệ thống. Các mã ID trùng nhau sẽ được
+          ghi đè hoặc cập nhật.
+        </p>
+
+        <form
+          action="/admin/import-json"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="mb-3">
+            <label for="fileInput" class="form-label fw-bold"
+              >Chọn file JSON:</label
+            >
+            <input
+              class="form-control"
+              type="file"
+              id="fileInput"
+              name="file"
+              accept=".json"
+              required
+            />
+          </div>
+          <div class="alert alert-warning small">
+            <i class="bi bi-exclamation-triangle"></i>
+            Lưu ý: Cấu trúc file JSON phải đúng định dạng mẫu của hệ thống. Nên
+            Export thử một file mẫu trước để xem cấu trúc.
+          </div>
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-upload"></i> Tải lên & Import
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "admin/layout.html" %} {% block admin_content %}
+<link
+  href="https://unpkg.com/vis-network/styles/vis-network.min.css"
+  rel="stylesheet"
+  type="text/css"
+/>
+<style>
+  #mynetwork {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #lightgray;
+    background-color: #fff;
+  }
+  .legend span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+</style>
+
+<div class="card shadow-sm">
+  <div
+    class="card-header bg-white d-flex justify-content-between align-items-center"
+  >
+    <h5 class="mb-0">Mạng lưới quan hệ (Graph Visualization)</h5>
+    <div class="legend small">
+      <span style="background: #97c2fc"></span>Student
+      <span style="background: #fb7e81" class="ms-2"></span>Teacher
+      <span style="background: #ffff00" class="ms-2"></span>Course
+      <span style="background: #7be141" class="ms-2"></span>Class
+      <span style="background: #eb7df4" class="ms-2"></span>Dept
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div id="mynetwork">
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script>
+  // Gọi API lấy dữ liệu từ Flask
+  fetch("/api/graph-data")
+    .then((response) => response.json())
+    .then((data) => {
+      var nodes = new vis.DataSet(data.nodes);
+      var edges = new vis.DataSet(data.edges);
+
+      // Tô màu cho từng loại Node
+      var options = {
+        nodes: {
+          shape: "dot",
+          size: 16,
+          font: { size: 14, color: "#333" },
+          borderWidth: 2,
+        },
+        groups: {
+          Student: {
+            color: { background: "#97C2FC", border: "#2B7CE9" },
+            shape: "dot",
+          },
+          Teacher: {
+            color: { background: "#FB7E81", border: "#FA0A10" },
+            shape: "diamond",
+          },
+          Course: {
+            color: { background: "#FFFF00", border: "#FB7E81" },
+            shape: "triangle",
+          },
+          Class: {
+            color: { background: "#7BE141", border: "#55AA00" },
+            shape: "square",
+          },
+          Department: {
+            color: { background: "#EB7DF4", border: "#AD0DCA" },
+            shape: "star",
+          },
+        },
+        edges: {
+          width: 1,
+          color: { color: "#848484", highlight: "#848484" },
+          arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+          smooth: { type: "continuous" },
+        },
+        physics: {
+          stabilization: false,
+          barnesHut: {
+            gravitationalConstant: -8000,
+            springConstant: 0.04,
+            springLength: 95,
+          },
+        },
+      };
+
+      var container = document.getElementById("mynetwork");
+      var network = new vis.Network(
+        container,
+        { nodes: nodes, edges: edges },
+        options
+      );
+    });
+</script>
+{% endblock %}

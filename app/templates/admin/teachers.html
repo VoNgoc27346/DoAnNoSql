@@ -35,6 +35,9 @@
       <select name="dept" class="form-select">
         <option value="CNTT">Khoa CNTT</option>
         <option value="KT">Khoa Kinh Tế</option>
+        <option value="NN">Khoa Ngoại Ngữ</option>
+        <option value="QTKD">Khoa QTKD</option>
+        <option value="DL">Khoa Du Lịch</option>
       </select>
     </div>
     <div class="col-md-1">
@@ -64,8 +67,14 @@
       <td>{{ t.data.position }}</td>
       <td>
         <a
+          href="/admin/teachers/edit/{{ t.data.teacher_id }}"
+          class="btn btn-sm btn-warning me-1"
+          >Sửa</a
+        >
+        <a
           href="/admin/teachers/delete/{{ t.data.teacher_id }}"
           class="btn btn-sm btn-danger"
+          onclick="return confirm('Xóa giảng viên này?');"
           >Xóa</a
         >
       </td>

@@ -1,0 +1,54 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+<div class="card shadow-sm" style="max-width: 600px; margin: auto;">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0">✏️ Cập nhật Sinh viên: {{ s.id }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Mã Sinh viên (Không thể sửa)</label>
+                <input type="text" class="form-control" value="{{ s.id }}" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Họ tên</label>
+                <input type="text" name="name" class="form-control" value="{{ s.name }}" required>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Lớp sinh hoạt</label>
+                    <input type="text" name="class" class="form-control" value="{{ s.class }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Khóa học</label>
+                    <input type="number" name="year" class="form-control" value="{{ s.year }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Khoa / Chuyên ngành</label>
+                <select name="dept" class="form-select">
+                    <option value="CNTT" {% if s.deptId == 'CNTT' %}selected{% endif %}>Công nghệ thông tin</option>
+                    <option value="KT" {% if s.deptId == 'KT' %}selected{% endif %}>Kinh tế</option>
+                    <option value="NN" {% if s.deptId == 'NN' %}selected{% endif %}>Ngoại ngữ</option>
+                    <option value="QTKD" {% if s.deptId == 'QTKD' %}selected{% endif %}>Quản trị Kinh doanh</option>
+                    <option value="DL" {% if s.deptId == 'DL' %}selected{% endif %}>Du lịch & Khách sạn</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" name="phone" class="form-control" value="{{ s.phone }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Mật khẩu đăng nhập</label>
+                    <input type="text" name="password" class="form-control" value="{{ s.password }}">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="/admin/students" class="btn btn-secondary">Quay lại</a>
+                <button type="submit" class="btn btn-warning">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

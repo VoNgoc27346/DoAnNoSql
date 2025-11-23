@@ -1,0 +1,44 @@
+{% extends "admin/layout.html" %}
+{% block admin_content %}
+<div class="card shadow-sm" style="max-width: 600px; margin: auto;">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0">✏️ Cập nhật Môn học: {{ c.id }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Mã Học phần (Không thể sửa)</label>
+                <input type="text" class="form-control" value="{{ c.id }}" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tên Môn học</label>
+                <input type="text" name="name" class="form-control" value="{{ c.name }}" required>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số tín chỉ</label>
+                    <input type="number" name="credit" class="form-control" value="{{ c.credit }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Học kỳ chuẩn</label>
+                    <input type="text" name="sem" class="form-control" value="{{ c.sem }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Khoa quản lý</label>
+                <select name="dept" class="form-select">
+                    <option value="CNTT" {% if c.deptId == 'CNTT' %}selected{% endif %}>Công nghệ thông tin</option>
+                    <option value="KT" {% if c.deptId == 'KT' %}selected{% endif %}>Kinh tế</option>
+                    <option value="NN" {% if c.deptId == 'NN' %}selected{% endif %}>Ngoại ngữ</option>
+                    <option value="QTKD" {% if c.deptId == 'QTKD' %}selected{% endif %}>Quản trị Kinh doanh</option>
+                    <option value="DL" {% if c.deptId == 'DL' %}selected{% endif %}>Du lịch & Khách sạn</option>
+                </select>
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="/admin/courses" class="btn btn-secondary">Quay lại</a>
+                <button type="submit" class="btn btn-warning">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

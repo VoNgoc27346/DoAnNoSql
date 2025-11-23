@@ -1,0 +1,88 @@
+{% extends "admin/layout.html" %} {% block admin_content %}
+<div class="card mb-4 p-3">
+  <form method="GET" class="row g-3 align-items-center">
+    <div class="col-auto">
+      <label class="col-form-label fw-bold"
+        >Nhập Mã Lớp học phần để chấm điểm:</label
+      >
+    </div>
+    <div class="col-auto">
+      <input
+        type="text"
+        name="class_id"
+        class="form-control"
+        value="{{ selected_class or '' }}"
+        placeholder="VD: CMP101_HK1_01"
+        required
+      />
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Xem danh sách</button>
+    </div>
+  </form>
+</div>
+
+{% if selected_class %}
+<div class="card shadow-sm">
+  <div
+    class="card-header bg-white d-flex justify-content-between align-items-center"
+  >
+    <h5 class="mb-0 text-primary">Bảng điểm lớp: {{ selected_class }}</h5>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>MSSV</th>
+          <th>Họ và Tên</th>
+          <th style="width: 200px">Điểm số (Thang 10)</th>
+          <th style="width: 150px">Cập nhật</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in roster %}
+        <tr>
+          <td>{{ s.id }}</td>
+          <td>{{ s.name }}</td>
+          <td>
+            <form method="POST" id="form_{{ s.id }}" class="d-flex">
+              <input
+                type="hidden"
+                name="class_id"
+                value="{{ selected_class }}"
+              />
+              <input type="hidden" name="student_id" value="{{ s.id }}" />
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max="10"
+                name="score"
+                class="form-control text-center fw-bold"
+                value="{{ s.score if s.score is not none else '' }}"
+                placeholder="-"
+              />
+            </form>
+          </td>
+          <td>
+            <button
+              type="submit"
+              form="form_{{ s.id }}"
+              class="btn btn-sm btn-success"
+            >
+              Lưu
+            </button>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" class="text-center py-4">
+            Lớp này chưa có sinh viên đăng ký.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %} {% endblock %}

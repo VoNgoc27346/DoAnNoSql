@@ -36,6 +36,9 @@
       <select name="dept" class="form-select">
         <option value="CNTT">CNTT</option>
         <option value="KT">Kinh Tế</option>
+        <option value="NN">Ngoại Ngữ</option>
+        <option value="QTKD">QTKD</option>
+        <option value="DL">Du Lịch</option>
       </select>
     </div>
     <div class="col-md-2">
@@ -101,6 +104,11 @@
         {% endif %}
       </td>
       <td>
+        <a
+          href="/admin/students/edit/{{ s.data.student_id }}"
+          class="btn btn-sm btn-warning me-1"
+          >Sửa</a
+        >
         <a
           href="/admin/students/delete/{{ s.data.student_id }}"
           class="btn btn-sm btn-danger"

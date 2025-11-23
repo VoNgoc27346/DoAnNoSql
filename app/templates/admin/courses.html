@@ -40,6 +40,9 @@
       <select name="dept" class="form-select">
         <option value="CNTT">CNTT</option>
         <option value="KT">Kinh Tế</option>
+        <option value="NN">Ngoại Ngữ</option>
+        <option value="QTKD">QTKD</option>
+        <option value="DL">Du Lịch</option>
       </select>
     </div>
     <div class="col-md-12 text-end">
@@ -56,6 +59,7 @@
       <th>Số Tín chỉ</th>
       <th>Học kỳ chuẩn</th>
       <th>Khoa quản lý</th>
+      <th>Hành động</th>
     </tr>
   </thead>
   <tbody>
@@ -66,10 +70,23 @@
       <td>{{ c.data.credit }}</td>
       <td>HK {{ c.data.semester }}</td>
       <td>{{ c.dept }}</td>
+      <td>
+        <a
+          href="/admin/courses/edit/{{ c.data.course_id }}"
+          class="btn btn-sm btn-warning me-1"
+          >Sửa</a
+        >
+        <a
+          href="/admin/courses/delete/{{ c.data.course_id }}"
+          class="btn btn-sm btn-danger"
+          onclick="return confirm('Bạn có chắc muốn xóa môn học này không?');"
+          >Xóa</a
+        >
+      </td>
     </tr>
     {% else %}
     <tr>
-      <td colspan="5" class="text-center text-muted py-3">
+      <td colspan="6" class="text-center text-muted py-3">
         Chưa có dữ liệu môn học
       </td>
     </tr>

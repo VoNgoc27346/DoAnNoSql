@@ -1,0 +1,79 @@
+{% extends "admin/layout.html" %} {% block admin_content %}
+<div class="row">
+  <!-- Tổng quan -->
+  <div class="col-md-3">
+    <div class="card text-white bg-primary mb-3 shadow-sm">
+      <div class="card-body text-center">
+        <h2 class="display-4">{{ stats.general.students }}</h2>
+        <p class="card-text">Tổng Sinh viên</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-white bg-success mb-3 shadow-sm">
+      <div class="card-body text-center">
+        <h2 class="display-4">{{ stats.general.teachers }}</h2>
+        <p class="card-text">Tổng Giảng viên</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-white bg-warning mb-3 shadow-sm">
+      <div class="card-body text-center text-dark">
+        <h2 class="display-4">{{ stats.general.courses }}</h2>
+        <p class="card-text">Môn học</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-white bg-info mb-3 shadow-sm">
+      <div class="card-body text-center">
+        <h2 class="display-4">{{ stats.general.classes }}</h2>
+        <p class="card-text">Lớp học phần</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white fw-bold">
+        Phân bố sinh viên theo Khoa
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          {% for d in stats.by_dept %}
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center"
+          >
+            {{ d.dept }}
+            <span class="badge bg-primary rounded-pill">{{ d.count }} SV</span>
+          </li>
+          {% else %}
+          <li class="list-group-item text-center">Chưa có dữ liệu</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white fw-bold">Ghi chú hệ thống</div>
+      <div class="card-body">
+        <p>Hệ thống đang chạy trên <strong>GraphDb</strong>.</p>
+        <p>
+          Các thống kê này được tính toán real-time dựa trên các Node và
+          Relationship trong đồ thị.
+        </p>
+        <div class="alert alert-info">
+          <small
+            >Mẹo: Sử dụng chức năng "Trực quan hóa" để xem cấu trúc mạng
+            lưới.</small
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
